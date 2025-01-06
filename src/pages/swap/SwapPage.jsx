@@ -6,6 +6,8 @@ import BackBtn from "../../ui/BackBtn";
 import SwapMiddlePart from "./SwapMiddlePart";
 import SwapBottomPart from "./SwapBottomPart";
 import SwapUpperPart from "./SwapUpperPart";
+import { useSelectedMemeCoinContext } from "../../context/SelectedMemeCoinProvider";
+import { useSwapPageDataProvider } from "../../context/SwapPageDataProvider";
 
 export default function SwapPage() {
   const { bg, bgBuy, bgSell, bgLight3 } = colorLibrary;
@@ -21,6 +23,11 @@ export default function SwapPage() {
     meme: 200,
   });
 
+  const { selectedMemeCoinData } = useSelectedMemeCoinContext();
+  const { selectedSwapType, setSelectedSwapType } = useSwapPageDataProvider();
+  console.log(selectedSwapType);
+  console.log(selectedMemeCoinData);
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
@@ -32,7 +39,7 @@ export default function SwapPage() {
 
   const handleChange = (_, newAlignment) => {
     if (newAlignment !== null) {
-      setActiveTab(newAlignment);
+      setSelectedSwapType(newAlignment);
     }
   };
 
@@ -45,7 +52,7 @@ export default function SwapPage() {
   // Initial focus when component mounts
   useEffect(() => {
     focusInput();
-  }, [inputRef, activeTab, inputValue]);
+  }, [inputRef, selectedSwapType, inputValue]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -87,7 +94,7 @@ export default function SwapPage() {
       </Box>
       {/* //* TOP */}
 
-      <SwapUpperPart handleChange={handleChange} activeTab={activeTab} />
+      <SwapUpperPart handleChange={handleChange} activeTab={selectedSwapType} />
 
       {/* //* MIDDLE */}
 
@@ -97,14 +104,14 @@ export default function SwapPage() {
         inputRef={inputRef}
         inputValue={inputValue}
         setInputValue={setInputValue}
-        activeTab={activeTab}
+        activeTab={selectedSwapType}
       />
 
       {/* //* DOWN */}
 
       <SwapBottomPart
         balance={balance}
-        activeTab={activeTab}
+        activeTab={selectedSwapType}
         setInputValue={setInputValue}
       />
 
