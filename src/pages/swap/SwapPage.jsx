@@ -8,12 +8,11 @@ import SwapBottomPart from "./SwapBottomPart";
 import SwapUpperPart from "./SwapUpperPart";
 import { useSelectedMemeCoinContext } from "../../context/SelectedMemeCoinProvider";
 import { useSwapPageDataProvider } from "../../context/SwapPageDataProvider";
+import { useParams } from "react-router-dom";
 
 export default function SwapPage() {
-  const { bg, bgBuy, bgSell, bgLight3 } = colorLibrary;
-  const [activeTab, setActiveTab] = useState("buy");
-  const [inputValue, setInputValue] = useState(1);
-  const [slippage, setSlippage] = useState(5);
+  const { bg } = colorLibrary;
+
   const inputRef = useRef(null);
   const [viewportHeight, setViewportHeight] = useState(
     window.visualViewport?.height || window.innerHeight
@@ -22,13 +21,28 @@ export default function SwapPage() {
     ton: 50,
     meme: 200,
   });
+  const { memeCoinID } = useParams();
 
-  const { selectedMemeCoinData } = useSelectedMemeCoinContext();
-  const { selectedSwapType, setSelectedSwapType } = useSwapPageDataProvider();
+  const { selectedMemeCoinData, selectedMemeCoinId, setSelectedMemeCoinId } =
+    useSelectedMemeCoinContext();
+  const {
+    selectedSwapType,
+    setSelectedSwapType,
+    swapAmount,
+    setSwapAmount,
+
+    slippage,
+    setSlippage,
+  } = useSwapPageDataProvider();
   console.log(selectedSwapType);
   console.log(selectedMemeCoinData);
 
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (!selectedMemeCoinId) setSelectedMemeCoinId(memeCoinID);
+  }, [memeCoinID, selectedMemeCoinId]);
+
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     if (!Number(slippage)) {
@@ -52,7 +66,7 @@ export default function SwapPage() {
   // Initial focus when component mounts
   useEffect(() => {
     focusInput();
-  }, [inputRef, selectedSwapType, inputValue]);
+  }, [inputRef, selectedSwapType, swapAmount]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -102,8 +116,8 @@ export default function SwapPage() {
         handleOpen={handleOpen}
         slippage={slippage}
         inputRef={inputRef}
-        inputValue={inputValue}
-        setInputValue={setInputValue}
+        inputValue={swapAmount}
+        setInputValue={setSwapAmount}
         activeTab={selectedSwapType}
       />
 
@@ -112,7 +126,7 @@ export default function SwapPage() {
       <SwapBottomPart
         balance={balance}
         activeTab={selectedSwapType}
-        setInputValue={setInputValue}
+        setInputValue={setSwapAmount}
       />
 
       {/* //* MODAL */}

@@ -5,9 +5,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React from "react";
 import { colorLibrary } from "../../color-library";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import { useSelectedMemeCoinContext } from "../../context/SelectedMemeCoinProvider";
 
 export default function SwapMiddlePart({
   handleOpen,
@@ -17,7 +17,21 @@ export default function SwapMiddlePart({
   setInputValue,
   activeTab,
 }) {
+  const { selectedMemeCoinData } = useSelectedMemeCoinContext();
+  const { symbol, price } = selectedMemeCoinData || {};
   const { boxBg, text } = colorLibrary;
+
+  //* temporary TON price
+  const tonPrice = 5.6;
+  //000.3 price
+  //2 ton
+  function calculateAmounts() {
+    if (activeTab === "buy") {
+      return (inputValue * tonPrice) / price;
+    } else if (activeTab === "sell") {
+      return (inputValue * price) / tonPrice;
+    }
+  }
   return (
     <Box
       display={"flex"}
@@ -54,7 +68,7 @@ export default function SwapMiddlePart({
               <InputAdornment position="end">
                 <Typography color={text} fontSize="2rem" fontWeight={600}>
                   {" "}
-                  {activeTab === "buy" ? "TON" : "$maCoin"}
+                  {activeTab === "buy" ? "TON" : symbol || ""}
                 </Typography>
               </InputAdornment>
             ),
@@ -100,7 +114,8 @@ export default function SwapMiddlePart({
         />
       </Box>
       <Typography color={text} fontSize={"1.5rem"}>
-        = 12 {activeTab === "sell" ? "TON" : "$maCoin"}
+        = {calculateAmounts().toFixed(2)}{" "}
+        {activeTab === "sell" ? "TON" : symbol || ""}
       </Typography>
     </Box>
   );
