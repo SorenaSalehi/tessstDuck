@@ -3,16 +3,18 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { colorLibrary } from "../color-library";
 
-export default function BackBtn({ customBg, customColor }) {
+export default function BackBtn({ customBg, customColor, margin = 0 }) {
   const navigate = useNavigate();
   return (
     <Button
-      onClick={() => navigate(-1)}
+      onClick={() => navigate("/")}
       sx={{
         color: customColor ? customColor : colorLibrary.bgLight3,
         bgcolor: customBg ? customBg : colorLibrary.boxBg,
         width: "max-content",
+        margin: margin,
         padding: "0 0.2rem",
+        marginBottom: "0.5rem",
         borderRadius: "1rem",
         textTransform: "lowercase",
         boxShadow:
